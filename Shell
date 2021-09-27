@@ -1,0 +1,81 @@
+variables = []
+programStorage = []
+store = True
+def calculate(mode,num1,num2):
+  if mode == "plus":
+    return(int(num1) + int(num2))
+  elif mode == "minus":
+    return(int(num1) - int(num2))
+  elif mode == "multiply":
+    return(int(num1) * int(num2))
+  elif mode == "divide":
+    return(int(num1) / int(num2))
+  else:
+    return "Error"
+while True:
+  current = input("DATA>")
+  if current == "list":
+    for item in programStorage:
+      print(item)
+    store = False
+  elif current.startswith("var"):
+    var = current.split()
+    if var[1] == "=":
+      if var[2] == "calculate":
+        variables.append(str(calculate(var[3], var[4], var[5])))
+      else:
+        variables.append(var[2])
+    elif var[1] == "set":
+      if var[3] == "calculate":
+        variables[int(var[2])] = str(calculate(var[4], var[5], var[6]))
+      else:
+        variables[int(var[2])] = var[3]
+    else:
+      print("Error: variable function not present")
+  elif current.startswith("print"):
+    contents = current.split()
+    try:
+      if contents[1] == "var":
+        print(variables[int(contents[2])])
+      elif contents[1] == "calculate":
+        print(calculate(contents[2], contents[3], contents[4]))
+      else:
+        print(contents[1])
+    except:
+      print("Error: nothing to print")
+  elif current.startswith("if"):
+    content = current.split(":")
+    ifstat = content[0].split()
+    cmnd = content[1].split()
+    runcmnd = False
+    if "=" in ifstat:
+      if ifstat[1] == "var":
+        if ifstat[5] == "var":
+          if ifstat[3] == "num":
+            if int(variables[int(ifstat[2])]) == int(variables[int(ifstat[5])]):
+              runcmnd = True
+          if ifstat[3] == "txt":
+            if variables[int(ifstat[2])] == variables[int(ifstat[5])]:
+              runcmnd = True
+        else:
+          if ifstat[3] == "num":
+            if int(variables[int(ifstat[2])]) == int(ifstat[5]):
+              runcmnd = True
+          if ifstat[3] == "txt":
+            if variables[int(ifstat[2])] == ifstat[5]:
+              runcmnd = True
+      else:
+        if ifstat[2] == "num":
+          if int(ifstat[1]) == int(ifstat[4]):
+            runcmnd = True
+        if ifstat[2] == "txt":
+          if ifstat[1] == ifstat[4]:
+            runcmnd = True
+    if runcmnd == True:
+      print("True")
+    else:
+      print("False")
+  else:
+    print("Error: command not valid")
+  if store:
+    programStorage.append(current)
